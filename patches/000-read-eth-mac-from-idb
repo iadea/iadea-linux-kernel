@@ -1,0 +1,33 @@
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c
+index d24c9ac..1d4fc85 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c
+@@ -1447,6 +1447,15 @@ void __weak rk_devinfo_get_eth_mac(u8 *mac)
+ {
+ }
+ 
++#ifdef CONFIG_RK_NAND
++static void eth_mac_read_from_IDB(u8 *mac)
++{
++	extern char *rknand_get_idb_data(void);
++	const char *nand_idb_data = rknand_get_idb_data();
++	memcpy(mac, &nand_idb_data[0x600 + 506], 6);
++}
++#endif
++
+ void rk_get_eth_addr(void *priv, unsigned char *addr)
+ {
+ 	int ret;
+@@ -1457,6 +1466,12 @@ void rk_get_eth_addr(void *priv, unsigned char *addr)
+ 	if (is_valid_ether_addr(addr))
+ 		goto out;
+ 
++#ifdef CONFIG_RK_NAND
++	eth_mac_read_from_IDB(addr);
++	if (is_valid_ether_addr(addr))
++		goto out;
++#endif
++
+ 	ret = rk_vendor_read(LAN_MAC_ID, addr, 6);
+ 	if (ret != 6 || is_zero_ether_addr(addr)) {
+ 		dev_err(dev, "%s: rk_vendor_read eth mac address failed (%d)",
