@@ -48,7 +48,7 @@
 
 	chosen {
 		//bootargs = "earlyprintk console=ttyFIQ0 rw root=PARTUUID=614e0000-0000 rootfstype=ext4 rootwait";
-		bootargs = "earlyprintk console=ttyFIQ0 rw root=/dev/mmcblk1p9 rootfstype=squashfs rootwait init=/linuxrc";
+		bootargs = "earlyprintk console=ttyFIQ0 rw root=/dev/mmcblk1p9 rootwait init=/linuxrc";
 	};
 
 	sound: sound {
